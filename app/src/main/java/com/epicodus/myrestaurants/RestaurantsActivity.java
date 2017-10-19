@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,10 +24,13 @@ public class RestaurantsActivity extends AppCompatActivity {
     private static final String TAG = RestaurantsActivity.class.getSimpleName();
     @Bind(R.id.locationTextView) TextView mLocationTextView;
     @Bind(R.id.listView) ListView mListView;
-    private String[] restaurants = new String[] {"Mi Mero Mole", "Deschutes Brewery",
-            "10 Barrel Brewery", "DarSalam Lazurdi", "Whole Bowl", "Syun Izakaya", "Petunia's",
-            "Nong's Khao Man Gai", "Little Bird", "Tin Shed", "Trinket Brunch", "Tao of Tea",
-            "Head Waters", "Jacquline", "Sizzle Pie", "Noraneko"};
+
+    public ArrayList<Restaurant> restaurants = new ArrayList<>();
+
+//    private String[] restaurants = new String[] {"Mi Mero Mole", "Deschutes Brewery",
+//            "10 Barrel Brewery", "DarSalam Lazurdi", "Whole Bowl", "Syun Izakaya", "Petunia's",
+//            "Nong's Khao Man Gai", "Little Bird", "Tin Shed", "Trinket Brunch", "Tao of Tea",
+//            "Head Waters", "Jacquline", "Sizzle Pie", "Noraneko"};
 
     private String[] cuisines = new String[] {"Mexican", "Pub", "Pub", "idk", "Vegan", "Japanese",
             "idk", "Vietnamese", "American", "American", "American", "Tea", "Seafood", "American",
@@ -69,10 +73,11 @@ public class RestaurantsActivity extends AppCompatActivity {
             try {
                 String jsonData = response.body().string();
                 Log.v(TAG, jsonData);
+                restaurants = yelpService.processResults(response);
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-        }
+                }
+         }
         });
     }
 }
