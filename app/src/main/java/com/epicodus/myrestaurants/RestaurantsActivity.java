@@ -69,14 +69,31 @@ public class RestaurantsActivity extends AppCompatActivity {
         }
 
         @Override
-            public void onResponse(Call call, Response response) throws IOException {
-            try {
-                String jsonData = response.body().string();
-                Log.v(TAG, jsonData);
+            public void onResponse(Call call, Response response) {
                 restaurants = yelpService.processResults(response);
-            } catch (IOException e) {
-                e.printStackTrace();
-                }
+
+                RestaurantsActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String[] restaurantNames = new String[restaurants.size()];
+                        for (int i = 0; i < restaurantNames.length; i++ ) {
+                            restaurantNames[i] = restaurants.get(i).getName();
+                        }
+
+                        ArrayAdapter adapter = new ArrayAdapter(RestaurantsActivity.this, android.R.layout.simple_list_item_1, restaurantNames);
+                        mListView.setAdapter(adapter);
+
+                        for (Restaurant restaurant : restaurants) {
+                            Log.d(TAG, "Name: " + restaurant.getName());
+                            Log.d(TAG, "Phone: " + restaurant.getPhone());
+                            Log.d(TAG, "Website: " + restaurant.getWebsite());
+                            Log.d(TAG, "Image Url: " + restaurant.getImageUrl());
+                            Log.d(TAG, "Rating: " + Double.toString(restaurant.getRating()));
+                            Log.d(TAG, "Address: " + android.text.TextUtils.join(", ", restaurant.getAddress()));
+                            Log.d(TAG, "Categories: " + restaurant.getCategories().toString());
+                        }
+                    }
+                });
          }
         });
     }
